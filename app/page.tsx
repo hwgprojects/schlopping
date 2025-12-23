@@ -311,6 +311,12 @@ export default function Page() {
   }, [])
 
   const completedCount = items.filter((item) => item.done).length
+  const connectionLabel =
+    connection === "connected"
+      ? "Live"
+      : connection === "connecting"
+      ? "Connecting"
+      : "Offline"
 
   return (
     <div className="min-h-screen bg-white">
@@ -342,7 +348,7 @@ export default function Page() {
                     : "bg-red-500"
                 }`}
               />
-              {connection === "connected" ? "Live" : "Connecting"}
+              {connectionLabel}
             </Badge>
             <Badge variant="secondary" className="bg-white/70">
               {items.length} items · {completedCount} done
@@ -588,8 +594,9 @@ export default function Page() {
                   const updatedBy =
                     allUsers.find((peer) => peer.id === item.updatedBy) ?? user
                   const color = getColor(updatedBy.colorId)
-                  const assignedTo =
-                    allUsers.find((peer) => peer.id === item.assignedTo) ?? user
+                  const assignedTo = allUsers.find(
+                    (peer) => peer.id === item.assignedTo
+                  )
 
                   return (
                     <div
@@ -666,7 +673,7 @@ export default function Page() {
                                 Responsible
                               </label>
                               <Select
-                                value={item.assignedTo || user.id}
+                                value={assignedTo ? assignedTo.id : ""}
                                 onValueChange={(value) =>
                                   updateItem(item.id, { assignedTo: value })
                                 }
@@ -675,6 +682,7 @@ export default function Page() {
                                   <SelectValue placeholder="Assign someone" />
                                 </SelectTrigger>
                                 <SelectContent>
+                                  <SelectItem value="">Unassigned</SelectItem>
                                   {allUsers.map((peer) => (
                                     <SelectItem key={peer.id} value={peer.id}>
                                       {peer.name}
@@ -693,7 +701,7 @@ export default function Page() {
                             {updatedBy.name}
                           </Badge>
                           <Badge variant="secondary" className="bg-white/80">
-                            {assignedTo.name}
+                            {assignedTo?.name ?? "Unassigned"}
                           </Badge>
                           <Button
                             variant="ghost"
