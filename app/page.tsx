@@ -597,6 +597,11 @@ export default function Page() {
                   const assignedTo = allUsers.find(
                     (peer) => peer.id === item.assignedTo
                   )
+                  const assignedLabel = assignedTo
+                    ? assignedTo.name
+                    : item.assignedTo
+                    ? "Offline user"
+                    : "Unassigned"
 
                   return (
                     <div
@@ -673,7 +678,7 @@ export default function Page() {
                                 Responsible
                               </label>
                               <Select
-                                value={assignedTo ? assignedTo.id : ""}
+                                value={item.assignedTo || ""}
                                 onValueChange={(value) =>
                                   updateItem(item.id, { assignedTo: value })
                                 }
@@ -683,6 +688,11 @@ export default function Page() {
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="">Unassigned</SelectItem>
+                                  {!assignedTo && item.assignedTo ? (
+                                    <SelectItem value={item.assignedTo}>
+                                      Offline user
+                                    </SelectItem>
+                                  ) : null}
                                   {allUsers.map((peer) => (
                                     <SelectItem key={peer.id} value={peer.id}>
                                       {peer.name}
@@ -701,7 +711,7 @@ export default function Page() {
                             {updatedBy.name}
                           </Badge>
                           <Badge variant="secondary" className="bg-white/80">
-                            {assignedTo?.name ?? "Unassigned"}
+                            {assignedLabel}
                           </Badge>
                           <Button
                             variant="ghost"

@@ -34,6 +34,9 @@ const nextConfig: NextConfig = {
   },
   basePath: basePath || undefined,
   assetPrefix: basePath || undefined,
+  turbopack: {
+    root: path.resolve(process.cwd()),
+  },
 }
 
 export default nextConfig
