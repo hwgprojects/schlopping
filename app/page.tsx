@@ -156,8 +156,12 @@ const mapToItem = (map: Y.Map<unknown>): ListItem => ({
 })
 
 export default function Page() {
-  const [user, setUser] = React.useState<UserProfile>(readStoredUser)
-  const [room, setRoom] = React.useState<string>(getInitialRoom)
+  const [user, setUser] = React.useState<UserProfile>({
+    id: "",
+    name: "Guest",
+    colorId: USER_COLORS[0].id,
+  })
+  const [room, setRoom] = React.useState<string>(DEFAULT_ROOM)
   const [connection, setConnection] = React.useState("connecting")
   const [peers, setPeers] = React.useState<UserPresence[]>([])
   const [items, setItems] = React.useState<ListItem[]>([])
@@ -173,6 +177,13 @@ export default function Page() {
 
   React.useEffect(() => {
     if (typeof window === "undefined") return
+    setUser(readStoredUser())
+    setRoom(getInitialRoom())
+  }, [])
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return
+    if (!user.id) return
     window.localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user))
   }, [user])
 
